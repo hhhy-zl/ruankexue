@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>辽河油田软科学成果</title>
+    <style>
+        /* ==================== 基础重置与公共样式 ==================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft YaHei", Arial, sans-serif; }
+        body { background-color: #f5f6f8; color: #333; font-size: 14px; }
+        a { text-decoration: none; color: inherit; cursor: pointer; }
+        ul { list-style: none; }
+
+        /* 顶部 Header */
+        .header-top { background-color: #fff; display: flex; align-items: center; padding: 20px 40px; border-bottom: 2px solid #d31111; }
+        .logo-text { font-size: 24px; font-weight: bold; color: #d31111; letter-spacing: 1px; }
+
+        /* 面包屑 */
+        .breadcrumb { padding: 15px 40px; font-size: 13px; color: #666; }
+        .breadcrumb a { color: #666; }
+        .breadcrumb a:hover { color: #f26e21; text-decoration: underline; }
+        .breadcrumb span { color: #d31111; margin: 0 5px; }
+
+        /* ==================== 页面 1：列表页专属样式 ==================== */
+        .list-container { width: 1200px; margin: 0 auto 40px; background: #fff; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        .search-area { display: flex; justify-content: center; align-items: center; margin: 20px 0 30px; gap: 10px; }
+        .search-box { display: flex; border: 1px solid #ddd; width: 500px; height: 40px; }
+        .search-box input { flex: 1; border: none; padding: 0 15px; outline: none; }
+        .search-box select { border: none; border-left: 1px solid #ddd; padding: 0 10px; background: #f9f9f9; outline: none; color: #666; }
+        .btn-search { background-color: #f26e21; color: #fff; border: none; padding: 0 30px; height: 40px; cursor: pointer; border-radius: 2px; font-size: 14px; }
+        .btn-reset { background-color: #fff; color: #f26e21; border: 1px solid #f26e21; padding: 0 30px; height: 40px; cursor: pointer; border-radius: 2px; font-size: 14px; }
+
+        .stats-bar { display: flex; justify-content: space-between; background-color: #fffaf5; border: 1px solid #ffe4cc; padding: 15px 40px; margin-bottom: 20px; border-radius: 4px; }
+        .stat-item { text-align: center; }
+        .stat-item .num { font-size: 20px; color: #f26e21; font-weight: bold; margin-bottom: 5px; }
+        .stat-item .label { font-size: 12px; color: #666; }
+
+        .main-layout { display: flex; gap: 20px; }
+        .sidebar-filter { width: 220px; border: 1px solid #eee; background: #fff; }
+        .filter-section { border-bottom: 1px solid #eee; padding: 15px; }
+        .filter-title { font-weight: bold; color: #f26e21; margin-bottom: 15px; font-size: 14px; border-left: 3px solid #f26e21; padding-left: 8px; }
+        .filter-item { display: flex; align-items: center; margin-bottom: 10px; font-size: 13px; color: #555; }
+        .filter-item input[type="checkbox"] { margin-right: 8px; }
+        .filter-item .count { color: #999; margin-left: 5px; }
+
+        .content-area { flex: 1; }
+        .tabs { display: flex; border-bottom: 1px solid #eee; margin-bottom: 15px; }
+        .tabs div { padding: 10px 20px; cursor: pointer; font-size: 14px; color: #666; }
+        .tabs div.active { color: #f26e21; border-bottom: 2px solid #f26e21; font-weight: bold; }
+        .list-info { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #666; margin-bottom: 15px; }
+        .sort-options span { margin-left: 15px; cursor: pointer; }
+        .sort-options span.active { color: #f26e21; }
+
+        /* 公共表格样式 */
+        .result-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .result-table th, .result-table td { border: 1px solid #eee; padding: 12px 15px; text-align: left; }
+        .result-table th { background-color: #f9f9f9; color: #666; font-weight: normal; }
+        .result-table tr:hover { background-color: #fdf5f0; }
+        .result-table td a { color: #333; }
+        .result-table td a:hover { color: #f26e21; text-decoration: underline; }
+        .action-link { color: #f26e21 !important; cursor: pointer; }
+        
+        /* 公共分页样式 */
+        .pagination { display: flex; justify-content: flex-end; align-items: center; margin-top: 20px; font-size: 13px; gap: 5px; }
+        .pagination span, .pagination a { padding: 5px 10px; border: 1px solid #ddd; border-radius: 2px; color: #666; }
+        .pagination a.active { background-color: #f26e21; color: #fff; border-color: #f26e21; }
+        .pagination select { padding: 5px; border: 1px solid #ddd; outline: none; margin: 0 10px; }
+
+        /* ==================== 页面 2：详情页专属样式 ==================== */
+        .detail-container { width: 1200px; margin: 0 auto 40px; display: flex; gap: 20px; }
+        .detail-main { flex: 1; background: #fff; padding: 30px; border: 1px solid #eee; min-height: 800px; }
+        .article-title { text-align: center; font-size: 22px; font-weight: bold; color: #333; margin-bottom: 40px; letter-spacing: 1px; }
+        
+        .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; font-size: 14px; }
+        .meta-item { display: flex; }
+        .meta-label { color: #333; font-weight: bold; width: 80px; flex-shrink: 0; }
+        .meta-value { color: #555; flex: 1; }
+        .meta-actions { display: flex; gap: 10px; }
+        .btn-orange { border: 1px solid #f26e21; color: #f26e21; background: #fff; padding: 4px 15px; border-radius: 2px; font-size: 12px; cursor: pointer; }
+        .btn-orange:hover { background: #f26e21; color: #fff; }
+
+        .article-content { border-top: 1px solid #eee; padding-top: 20px; line-height: 2; color: #444; font-size: 14px; }
+        .article-content p { margin-bottom: 10px; }
+        .article-content .indent-1 { padding-left: 2em; }
+        .article-content .indent-2 { padding-left: 4em; }
+
+        /* ===== 新增：详情页底部模块（研究人员+完成单位+评论） ===== */
+        .bottom-section { margin-top: 40px; }
+        
+        /* 详情页内的标签页 */
+        .detail-tabs { display: flex; border-bottom: 1px solid #eee; margin-bottom: 20px; }
+        .detail-tabs .tab { padding: 10px 20px; cursor: pointer; font-size: 14px; color: #333; transition: all 0.2s; }
+        .detail-tabs .tab:hover { color: #f26e21; }
+        .detail-tabs .tab.active { color: #f26e21; font-weight: bold; border-bottom: 2px solid #f26e21; }
+
+        /* 评论模块 */
+        .comment-section { margin-top: 40px; }
+        .comment-title { font-size: 16px; font-weight: bold; margin-bottom: 20px; color: #333; }
+        .no-comments { text-align: center; color: #999; padding: 60px 0; font-size: 14px; }
+        
+        /* 底部输入框和发布按钮 */
+        .comment-input-box { display: flex; margin-top: 10px; }
+        .comment-input-box input { flex: 1; border: 1px solid #ddd; padding: 12px 15px; outline: none; font-size: 13px; }
+        .comment-input-box input:focus { border-color: #f26e21; }
+        .comment-input-box button { background: #f26e21; color: #fff; border: none; padding: 0 40px; cursor: pointer; font-size: 14px; }
+        .comment-input-box button:hover { background: #d35400; }
+
+        /* 右侧边栏 */
+        .sidebar-widgets { width: 320px; display: flex; flex-direction: column; gap: 20px; }
+        .widget { background: #fff; border: 1px solid #eee; padding: 15px; }
+        .widget-title { font-size: 14px; font-weight: bold; color: #f26e21; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
+        .widget-title::before { content: ''; display: inline-block; width: 3px; height: 14px; background: #f26e21; margin-right: 8px; }
+        .widget-title .more { font-size: 12px; color: #999; font-weight: normal; cursor: pointer; }
+        .rec-list li { font-size: 13px; color: #666; margin-bottom: 12px; list-style-type: disc; margin-left: 15px; cursor: pointer; }
+        .rec-list li:hover { color: #f26e21; }
+
+        .word-cloud { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; padding: 20px 10px; }
+        .word-cloud span { cursor: pointer; transition: transform 0.2s; }
+        .word-cloud span:hover { transform: scale(1.1); }
+        .wc-large { font-size: 22px; font-weight: bold; color: #f26e21; }
+        .wc-medium { font-size: 16px; font-weight: bold; color: #d35400; }
+        .wc-small { font-size: 14px; color: #888; }
+        .wc-tiny { font-size: 12px; color: #aaa; }
+
+        .graph-box { height: 200px; display: flex; justify-content: center; align-items: center; background: #fdfdfd; }
+        .graph-circle { width: 100px; height: 100px; background: #f26e21; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 12px; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部 Header -->
+    <header class="header-top">
+        <div class="logo-text">辽河油田软科学成果</div>
+    </header>
+
+    <!-- 面包屑 -->
+    <div class="breadcrumb">
+        <a onclick="showPage('index')">成果借阅</a> <span>&gt;</span> <span id="breadcrumb-current">集团课题</span>
+    </div>
+
+    <!-- ==================== 页面 1：列表页 ==================== -->
+    <div id="page-index" class="list-container">
+        <div class="search-area">
+            <div class="search-box">
+                <input type="text" placeholder="请输入您要搜索的关键词">
+                <select><option>模糊匹配</option><option>精确匹配</option></select>
+            </div>
+            <button class="btn-search">搜索</button>
+            <button class="btn-reset">重置</button>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item"><div class="num">1,174</div><div class="label">集团成果</div></div>
+            <div class="stat-item"><div class="num">1,140</div><div class="label">研究类简报</div></div>
+            <div class="stat-item"><div class="num">1,012</div><div class="label">智库成果</div></div>
+            <div class="stat-item"><div class="num">129</div><div class="label">企业成果</div></div>
+            <div class="stat-item"><div class="num">2,018</div><div class="label">国外报告</div></div>
+            <div class="stat-item"><div class="num">741</div><div class="label">研究专家</div></div>
+            <div class="stat-item"><div class="num">251</div><div class="label">研究单位</div></div>
+            <div class="stat-item"><div class="num">6,561</div><div class="label">研究人员</div></div>
+        </div>
+
+        <div class="main-layout">
+            <aside class="sidebar-filter">
+                <div class="filter-section">
+                    <div class="filter-title">年份</div>
+                    <label class="filter-item"><input type="checkbox"> 2026年 <span class="count">(101)</span></label>
+                    <label class="filter-item"><input type="checkbox"> 2025年 <span class="count">(99)</span></label>
+                    <label class="filter-item"><input type="checkbox"> 2024年 <span class="count">(107)</span></label>
+                    <label class="filter-item"><input type="checkbox"> 2023年 <span class="count">(116)</span></label>
+                    <label class="filter-item"><input type="checkbox"> 2022年 <span class="count">(9)</span></label>
+                </div>
+                <div class="filter-section">
+                    <div class="filter-title">分类</div>
+                    <label class="filter-item"><input type="checkbox"> 集团成果 <span class="count">(1134)</span></label>
+                    <label class="filter-item"><input type="checkbox"> 获奖成果 <span class="count">(35)</span></label>
+                </div>
+            </aside>
+
+            <div class="content-area">
+                <div class="tabs">
+                    <div class="active">全部</div>
+                    <div>集团成果</div>
+                    <div>获奖成果</div>
+                </div>
+
+                <div class="list-info">
+                    <div>为您找到相关结果 1174个，搜索用时 (0.047)秒</div>
+                    <div class="sort-options">相关性 <span>↓</span> | 发布时间 <span class="active">↓</span></div>
+                </div>
+
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th width="60">序号</th><th width="100">分类</th><th>名称</th><th width="120">发布时间</th><th width="80">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td></td><td><a>油田未上市业务发展现状及高质量发展方向研究</a></td><td>2026-09-16</td><td></td></tr>
+                        <tr><td>2</td><td></td><td><a>油气人工智能学科、技术和标准体系研究</a></td><td>2026-09-16</td><td></td></tr>
+                        <tr><td>3</td><td></td><td><a>炼化业务实现碳中和的路径研究</a></td><td>2026-09-11</td><td></td></tr>
+                        <tr><td>4</td><td></td><td><a>中国石油海洋业务发展战略与策略研究</a></td><td>2026-09-11</td><td></td></tr>
+                        <tr>
+                            <td>5</td>
+                            <td>集团成果</td>
+                            <td><a onclick="showPage('detail')">中国石油芳烃产业链高质量发展研究</a></td>
+                            <td>2026-08-10</td>
+                            <td><a class="action-link">借阅</a></td>
+                        </tr>
+                        <tr><td>6</td><td>集团成果</td><td><a>国内外宏观环境变化对集团公司影响研究（2025）</a></td><td>2026-08-10</td><td><a class="action-link">借阅</a></td></tr>
+                        <tr><td>7</td><td>集团成果</td><td><a>工程建设业务支持集团公司“大金砖”重点区域能源合作研究</a></td><td>2026-08-10</td><td><a class="action-link">借阅</a></td></tr>
+                        <tr><td>8</td><td>集团成果</td><td><a>“十五五”及中长期集团公司发展面临的战略机遇和风险挑战研究</a></td><td>2026-07-10</td><td><a class="action-link">借阅</a></td></tr>
+                        <tr><td>9</td><td>集团成果</td><td><a>集团公司深化事业部制改革研究</a></td><td>2026-07-10</td><td><a class="action-link">借阅</a></td></tr>
+                        <tr><td>10</td><td>集团成果</td><td><a>上合组织国家宏观形势与能源合作研究</a></td><td>2026-07-10</td><td><a class="action-link">借阅</a></td></tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <span>共 1174 条</span>
+                    <select><option>10条/页</option></select>
+                    <a>&lt;</a><a class="active">1</a><a>2</a><a>3</a><a>4</a><a>5</a><span>...</span><a>118</a><a>&gt;</a>
+                    <span>前往</span><input type="text" value="1" style="width: 30px; text-align: center; border: 1px solid #ddd; padding: 4px;"><span>页</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 页面 2：详情页 (默认隐藏) ==================== -->
+    <div id="page-detail" class="detail-container" style="display: none;">
+        <!-- 左侧内容 -->
+        <main class="detail-main">
+            <h1 class="article-title">中国石油芳烃产业链高质量发展研究</h1>
+            
+            <div class="meta-grid">
+                <div class="meta-item"><span class="meta-label">成果分类</span><span class="meta-value">集团成果</span></div>
+                <div class="meta-item"><span class="meta-label">需求单位</span><span class="meta-value">炼油化工和新材料分公司</span></div>
+                <div class="meta-item"><span class="meta-label">管理单位</span><span class="meta-value">政策研究室</span></div>
+                <div class="meta-item"><span class="meta-label">承担单位</span><span class="meta-value">中国昆仑工程有限公司,中国石油规划总院</span></div>
+                <div class="meta-item"><span class="meta-label">发布时间</span><span class="meta-value">2026-08-10</span></div>
+                <div class="meta-item meta-actions">
+                    <span class="meta-label">成果择要</span>
+                    <button class="btn-orange">成果择要</button>
+                    <button class="btn-orange">我要借阅</button>
+                </div>
+            </div>
+
+            <div class="article-content">
+                <p style="font-weight: bold;">内容提要</p>
+                <p>一、总论</p>
+                <p>二、发展环境分析</p>
+                <p class="indent-1">（一）全球芳烃产业链发展格局与趋势</p>
+                <p class="indent-2">1、全球PX新增产能集中在亚洲，生产中心加速向东北亚尤其中国转移</p>
+                <p class="indent-2">2、全球PX贸易活跃，中国仍是贸易中心</p>
+                <p class="indent-2">3、“十四五”期间海外产能以退出为主，“十五五”期间PX扩能有限</p>
+                <p class="indent-2">4、未来全球需求增加而供应放缓，导致PX装置负荷明显提升</p>
+                <p class="indent-2">5、全球PX市场的竞争愈加激烈，新建装置拥有后发优势</p>
+                <p class="indent-1">（二）我国芳烃产业链发展现状与趋势</p>
+                <p class="indent-2">1、产能扩张，我国已成为全球芳烃产业中心</p>
+                <p class="indent-2">2、原料提质，炼化转型升级为芳烃产业疏调资源前路</p>
+                <p class="indent-2">3、装置迭代，新一代装置大型化、链条化趋势明显</p>
+                <p class="indent-2">4、需求升级，新兴产业快速发展为芳烃产业链释放新增长点</p>
+                <p class="indent-2">5、供不应求，供需双重变革因素推进PX进入新一轮扩能周期</p>
+                <p class="indent-2">6、区域失衡，华东、华南、东北地区仍具发展潜力</p>
+                <p class="indent-2">7、政策驱动，国家加快推进芳烃产业链新旧动能转换</p>
+                <p class="indent-1">（三）芳烃技术最新进展及发展趋势</p>
+                <p class="indent-2">1、芳烃原料多元化技术助力“减油增化”</p>
+                <p class="indent-2">2、高值化利用提升芳烃产业链整体竞争力</p>
+                <p class="indent-2">3、智能化技术成为驱动芳烃产业高质量发展的新引擎</p>
+                <p class="indent-2">4、绿色化技术推动芳烃产业从末端治理转向源头减排和过程重塑</p>
+                <p>三、中国石油芳烃业务发展现状及存在问题</p>
+                <p class="indent-1">（一）芳烃业务发展现状</p>
+                <p class="indent-2">1、生产现状</p>
+                <p class="indent-2">2、芳烃技术研发现状</p>
+            </div>
+
+            <!-- ===== 主要研究人员 & 完成单位 区域 ===== -->
+            <div class="bottom-section">
+                <!-- 标签页 (添加了 id 和 onclick 事件) -->
+                <div class="detail-tabs">
+                    <div class="tab active" id="tab-btn-researchers" onclick="switchDetailTab('researchers')">主要研究人员</div>
+                    <div class="tab" id="tab-btn-units" onclick="switchDetailTab('units')">完成单位</div>
+                </div>
+                
+                <!-- 内容区 1：主要研究人员 (默认显示) -->
+                <div id="tab-content-researchers" class="tab-content" style="display: block;">
+                    <table class="result-table">
+                        <thead>
+                            <tr>
+                                <th width="60">序号</th><th width="100">姓名</th><th width="150">职称</th><th width="180">职务</th><th>工作单位</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>陈伟</td><td></td><td>高级工程师</td><td>规划总院</td></tr>
+                            <tr><td>2</td><td>谢萍</td><td></td><td>主任</td><td>中国昆仑工程有限公司</td></tr>
+                            <tr><td>3</td><td>陈起</td><td></td><td>高级主管</td><td>炼油化工和新材料分公司</td></tr>
+                            <tr><td>4</td><td>李元明</td><td></td><td>总经理</td><td>炼油化工和新材料分公司</td></tr>
+                            <tr><td>5</td><td>韩志群</td><td></td><td>党委副书记</td><td>规划总院</td></tr>
+                            <tr><td>6</td><td>陈寰颐</td><td></td><td>副总经理/总工程师</td><td>中国昆仑工程有限公司</td></tr>
+                            <tr><td>7</td><td>许真铭</td><td></td><td>副总经理</td><td>炼油化工和新材料分公司</td></tr>
+                            <tr><td>8</td><td>孙克乙</td><td></td><td>工程师</td><td>规划总院</td></tr>
+                            <tr><td>9</td><td>袁子晴</td><td></td><td>高级工程师</td><td>中国昆仑工程有限公司</td></tr>
+                            <tr><td>10</td><td>张蔚</td><td></td><td>高级工程师</td><td>规划总院</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination">
+                        <span>共 29 条</span>
+                        <select><option>10条/页</option></select>
+                        <a>&lt;</a><a class="active">1</a><a>2</a><a>3</a><a>&gt;</a>
+                        <span>前往</span><input type="text" value="1" style="width: 30px; text-align: center; border: 1px solid #ddd; padding: 4px;"><span>页</span>
+                    </div>
+                </div>
+
+                <!-- 内容区 2：完成单位 (默认隐藏) -->
+                <div id="tab-content-units" class="tab-content" style="display: none;">
+                    <table class="result-table">
+                        <thead>
+                            <tr>
+                                <th width="60">序号</th><th width="250">单位名称</th><th>单位性质</th><th width="150">参与人数</th><th>主要贡献</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>中国昆仑工程有限公司</td><td>国有企业</td><td>15</td><td>负责芳烃产业链整体技术研发与工程转化</td></tr>
+                            <tr><td>2</td><td>中国石油规划总院</td><td>科研机构</td><td>10</td><td>负责产业政策研究、市场趋势分析及规划编制</td></tr>
+                            <tr><td>3</td><td>炼油化工和新材料分公司</td><td>国有企业</td><td>4</td><td>负责业务需求对接及现场试验协调</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination">
+                        <span>共 3 条</span>
+                        <select><option>10条/页</option></select>
+                        <a>&lt;</a><a class="active">1</a><a>&gt;</a>
+                        <span>前往</span><input type="text" value="1" style="width: 30px; text-align: center; border: 1px solid #ddd; padding: 4px;"><span>页</span>
+                    </div>
+                </div>
+                
+                <!-- 评论记录 (公共) -->
+                <div class="comment-section">
+                    <div class="comment-title">评论记录</div>
+                    <div class="no-comments">暂无评论</div>
+                    <div class="comment-input-box">
+                        <input type="text" placeholder="请输入您要评论的内容">
+                        <button>发布</button>
+                    </div>
+                </div>
+            </div>
+            <!-- ===== 区域结束 ===== -->
+
+        </main>
+
+        <!-- 右侧边栏 -->
+        <aside class="sidebar-widgets">
+            <div class="widget">
+                <div class="widget-title">相关推荐 <span class="more">更多...</span></div>
+                <ul class="rec-list">
+                    <li>子企业董事会规范运行相关问题研究</li>
+                    <li>重大改革方案可行性论证相关问题研究</li>
+                    <li>重大改革举措后评价相关问题研究</li>
+                    <li>海外党建“一国一策”研究（在研）</li>
+                    <li>“十四五”市场化经营机制改革专项...</li>
+                    <li>“十四五”供给侧结构性改革专项研究</li>
+                </ul>
+            </div>
+
+            <div class="widget">
+                <div class="widget-title">成果热点</div>
+                <div class="word-cloud">
+                    <span class="wc-large">高质量</span><span class="wc-medium">高端</span><span class="wc-small">原料</span><span class="wc-medium">升级</span><span class="wc-tiny">研发</span><br>
+                    <span class="wc-small">需求</span><span class="wc-medium">产业</span><span class="wc-small">全球</span><span class="wc-tiny">策略</span><span class="wc-small">产销</span><br>
+                    <span class="wc-tiny">提升</span><span class="wc-large">芳烃</span><span class="wc-small">加快</span><br>
+                    <span class="wc-medium">现状</span><span class="wc-large">PX</span><span class="wc-small">产业链</span><br>
+                    <span class="wc-tiny">产能</span><span class="wc-small">装置</span><span class="wc-tiny">业务</span><span class="wc-tiny">能力</span><br>
+                    <span class="wc-small">市场</span><span class="wc-tiny">仍具</span><span class="wc-tiny">PTA</span>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="widget-title">成果图谱 <span class="more">放大</span></div>
+                <div class="graph-box">
+                    <div class="graph-circle">中国石油芳...</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- ==================== JavaScript 交互逻辑 ==================== -->
+    <script>
+        // 页面切换逻辑
+        function showPage(pageName) {
+            const pageIndex = document.getElementById('page-index');
+            const pageDetail = document.getElementById('page-detail');
+            const breadcrumbCurrent = document.getElementById('breadcrumb-current');
+
+            if (pageName === 'index') {
+                pageIndex.style.display = 'block';
+                pageDetail.style.display = 'none';
+                breadcrumbCurrent.innerText = '集团课题';
+                window.scrollTo(0, 0);
+            } else if (pageName === 'detail') {
+                pageIndex.style.display = 'none';
+                pageDetail.style.display = 'flex';
+                breadcrumbCurrent.innerText = '成果详情';
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // 详情页内部的 Tab 切换逻辑 (修复的核心)
+        function switchDetailTab(tabName) {
+            // 1. 获取按钮和内容容器元素
+            const btnResearchers = document.getElementById('tab-btn-researchers');
+            const btnUnits = document.getElementById('tab-btn-units');
+            const contentResearchers = document.getElementById('tab-content-researchers');
+            const contentUnits = document.getElementById('tab-content-units');
+
+            // 2. 重置所有状态
+            btnResearchers.classList.remove('active');
+            btnUnits.classList.remove('active');
+            contentResearchers.style.display = 'none';
+            contentUnits.style.display = 'none';
+
+            // 3. 根据点击激活对应的状态
+            if (tabName === 'researchers') {
+                btnResearchers.classList.add('active');
+                contentResearchers.style.display = 'block';
+            } else if (tabName === 'units') {
+                btnUnits.classList.add('active');
+                contentUnits.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
