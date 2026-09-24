@@ -136,7 +136,7 @@
 
     <!-- 面包屑 -->
     <div class="breadcrumb">
-        <a onclick="showPage('index')">成果借阅</a> <span>&gt;</span> <span id="breadcrumb-current">集团课题</span>
+        <a onclick="showPage('index')">成果库</a> <span>&gt;</span> <span id="breadcrumb-current">成果列表</span>
     </div>
 
     <!-- ==================== 页面 1：列表页 ==================== -->
@@ -475,7 +475,7 @@
             if (pageName === 'index') {
                 pageIndex.style.display = 'block';
                 pageDetail.style.display = 'none';
-                breadcrumbCurrent.innerText = '集团课题';
+                breadcrumbCurrent.innerText = '成果列表';
                 window.scrollTo(0, 0);
             } else if (pageName === 'detail') {
                 pageIndex.style.display = 'none';
