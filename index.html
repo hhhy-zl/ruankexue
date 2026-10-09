@@ -165,7 +165,7 @@
                 <table class="result-table">
                     <thead>
                         <tr>
-                            <th width="60">序号</th><th width="70">年度</th><th width="120">分类</th><th>名称</th><th width="200">立项单位</th><th width="200">承担单位</th>
+                            <th width="60">序号</th><th width="70">年度</th><th width="120">分类</th><th>名称</th><th width="200">立项单位</th><th width="200">承担单位</th><th width="120">获奖情况</th>
                         </tr>
                     </thead>
                     <tbody id="list-tbody"></tbody>
@@ -372,6 +372,7 @@
                 '<td><a onclick="showDetail(' + DATA.indexOf(r) + ')">' + esc(r['名称']) + '</a></td>' +
                 '<td>' + esc(normalizeUnits(r['立项单位'])) + '</td>' +
                 '<td>' + esc(normalizeUnits(r['承担单位'])) + '</td>' +
+                '<td>' + esc(orDash(awardLevel(r['获奖情况']))) + '</td>' +
                 '</tr>'
             ).join('');
             document.getElementById('list-count').innerText = '为您找到相关结果 ' + list.length + '个';
@@ -420,8 +421,7 @@
                 ['成果分类', orDash(r['成果分类'] || r['分类'])],
                 ['立项单位', orDash(normalizeUnits(r['立项单位']))],
                 ['承担单位', orDash(normalizeUnits(r['承担单位']))],
-                ['完成时间', orDash(r['完成时间'])],
-                ['获奖情况', orDash(awardLevel(r['获奖情况']))]
+                ['完成时间', orDash(r['完成时间'])]
             ];
             document.getElementById('detail-meta').innerHTML = meta.map(([k, v]) =>
                 '<div class="meta-item"><span class="meta-label">' + k + '</span><span class="meta-value">' + esc(v) + '</span></div>'
