@@ -391,7 +391,6 @@
 
 
         <a onclick="showPage('index')">成果库</a> <span>&gt;</span> <span id="breadcrumb-current">成果列表</span>
-        <div class="breadcrumb-center">今日访问量：<span id="today-visits">0</span>&nbsp;&nbsp;累计访问量：<span id="total-visits">0</span></div>
 
 
     </div>
@@ -1455,29 +1454,11 @@
 
 
 
-        function renderVisitStats() {
-            const d = new Date();
-            const todayKey = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-            const lastDate = localStorage.getItem('visit_last_date') || '';
-            let total = parseInt(localStorage.getItem('visit_total') || '0', 10);
-            let today = parseInt(localStorage.getItem('visit_today') || '0', 10);
-            if (lastDate !== todayKey) {
-                today = 0;
-            }
-            total += 1;
-            today += 1;
-            localStorage.setItem('visit_total', String(total));
-            localStorage.setItem('visit_last_date', todayKey);
-            localStorage.setItem('visit_today', String(today));
-            document.getElementById('today-visits').innerText = today;
-            document.getElementById('total-visits').innerText = total;
-        }
 
 
         // ---------- 初始化 ----------
 
 
-        renderVisitStats();
 
 
         renderStats();
